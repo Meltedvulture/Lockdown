@@ -6,7 +6,7 @@
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_xta8w"]
 friction = 0.75
-bounce = 0.25
+bounce = 0.05
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_andwr"]
 margin = 0.25
