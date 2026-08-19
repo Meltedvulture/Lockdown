@@ -201,24 +201,29 @@ func assign_team(id):
 	if !multiplayer.is_server():
 		return
 
-	var cop_count = 0
-	var robber_count = 0
+	Global.cop_count = 0
+	Global.robber_count = 0
+	Global.aliveCopCount = 0
+	Global.aliveRobberCount = 0
 
 	for t in teams.values():
 
 		if t == "Cop":
-			cop_count += 1
+			Global.cop_count += 1
+			Global.aliveCopCount += 1
 
 		elif t == "Robber":
-			robber_count += 1
+			Global.robber_count += 1
+			Global.aliveRobberCount += 1
 
 	var team
 
-	if cop_count > robber_count:
+	if Global.cop_count > Global.robber_count:
 		team = "Robber"
 
-	elif robber_count > cop_count:
+	elif Global.robber_count > Global.cop_count:
 		team = "Cop"
+
 
 	else:
 		team = "Cop" if randi() % 2 == 0 else "Robber"
@@ -226,6 +231,13 @@ func assign_team(id):
 	teams[id] = team
 
 	print("Player ", id, " assigned to ", team)
+	
+	if team == "Cop":
+		Global.aliveCopCount += 1
+		print("COP IS ALIVE")
+	elif team == "Robber":
+		Global.aliveRobberCount += 1
+		print("ROBBER IS ALOVE")
 
 	# Update local player's team
 	if id == multiplayer.get_unique_id():
@@ -324,6 +336,9 @@ func upnp_setup():
 
 
 func _physics_process(delta):
+	if multiplayer.get_unique_id() == 1:
+		print(Global.aliveCopCount)
+		print(Global.aliveRobberCount)
 
 	if Input.is_action_just_pressed("PauseMenu"):
 
@@ -425,3 +440,29 @@ func exitTrapSetup():
 func resetRound():
 	Global.roundReset.emit()
 	Global.respawnPlayers()
+	rpc("recieveReset")
+
+@rpc("reliable", "any_peer")
+func recieveReset():
+	Global.roundReset.emit()
+	Global.respawnPlayers()
+
+@rpc("reliable", "call_local")
+func updateAlivePlayers(team):
+	if team == "Cop":
+		Global.aliveCopCount -= 1
+	elif team == "Robber":
+		Global.aliveRobberCount -= 1
+
+	
+	if Global.aliveCopCount <= 0 or Global.aliveRobberCount <= 0:
+		Global.aliveCopCount = 0
+		Global.aliveRobberCount = 0
+		for t in teams.values():
+
+			if t == "Cop":
+				Global.aliveCopCount += 1
+
+			elif t == "Robber":
+				Global.aliveRobberCount += 1
+		resetRound()

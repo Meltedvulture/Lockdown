@@ -30,6 +30,10 @@ var isMainMenu = true
 
 var copSpawnpoints
 var robberSpawnpoints
+var cop_count = 0
+var robber_count = 0
+var aliveCopCount = 0
+var aliveRobberCount = 0
 
 func updateLabels(clipAmmo, reserveAmmo):
 	clipLabel.text = str(clipAmmo)
@@ -94,7 +98,8 @@ func respawnPlayers():
 				if Global.myCurrentTeam == "Robber":
 					o.global_position = robberSpawnpoints.pick_random().global_position 
 				else:
-					o.global_position = copSpawnpoints.pick_random().global_position 
+					o.global_position = copSpawnpoints.pick_random().global_position
+	 
 	
 	#Recursivley gather all players and move them to root node
 	#Change Scene

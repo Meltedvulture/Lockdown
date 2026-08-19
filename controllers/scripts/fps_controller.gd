@@ -198,7 +198,14 @@ func take_damage(damage, type, team):
 
 		if Global.playerHealth <= 0:
 			Global.playerHealth = 100
-
+			position.z += 100
+			if multiplayer.get_unique_id() != 1:
+				get_tree().current_scene.updateAlivePlayers.rpc(Global.myCurrentTeam)
+				#Global.rpc("replicateSpecificObject", str(get_tree().current_scene.get_path()), "updateAlivePlayers", Global.myCurrentTeam)
+				print("IM NOT HOST AND IT CALLLLLLLLED")
+			else:
+				get_tree().current_scene.updateAlivePlayers(Global.myCurrentTeam)
+				print("HOST DIDES HEEEEEEELp")
 
 func updatePlayerModel():
 	if Global.myCurrentTeam == "Cop":

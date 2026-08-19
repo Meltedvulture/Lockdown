@@ -112,13 +112,22 @@ func exitTrapSetup():
 		Global.respawnPlayers()
 
 func resetRound():
-	if get_tree().get_network_unique_id() == 1:
-		Global.roundReset.emit()
-		Global.respawnPlayers()
-		rpc("recieveReset")
+	Global.roundReset.emit()
+	Global.respawnPlayers()
+	rpc("recieveReset")
 
 @rpc("reliable")
 func recieveReset():
-	if get_tree().get_network_unique_id() != 1:
-		Global.roundReset.emit()
-		Global.respawnPlayers()
+	Global.roundReset.emit()
+	Global.respawnPlayers()
+
+@rpc("reliable")
+func updateAlivePlayers(team):
+	if multiplayer.get_unique_id() == 1:
+		if team == "Cop":
+			Global.aliveCopCount -= 1
+		elif team == "Robber":
+			Global.aliveRobberCount -= 1
+		
+		if Global.aliveCopCount <= 0 or Global.aliveRobberCount <= 0:
+			resetRound()
