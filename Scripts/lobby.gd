@@ -158,6 +158,7 @@ func add_player(peer_id: int):
 
 	print("Player ", peer_id, " joined.")
 	print("Playercount is ", playercount, "/", MAX_PLAYERS)
+	Global.playerJoined.emit()
 
 
 
@@ -452,10 +453,6 @@ func updateAlivePlayers(team):
 			Global.aliveCopCount -= 1
 		elif team == "Robber":
 			Global.aliveRobberCount -= 1
-
-		
-		print(Global.aliveCopCount)
-		print(Global.aliveRobberCount)
 		
 		if Global.aliveCopCount <= 0 or Global.aliveRobberCount <= 0:
 			Global.aliveCopCount = 0

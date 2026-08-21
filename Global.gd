@@ -2,6 +2,7 @@
 
 extends Node
 signal roundReset
+signal playerJoined
 
 var player
 var playerPoints = 0:

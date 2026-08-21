@@ -31,6 +31,8 @@ var loadedWeapon
 func _ready():
 	if weaponPath != null:
 		setModel(weaponPath)
+	Global.roundReset.connect(deleteWeaponDrop)
+	Global.playerJoined.connect(deleteWeaponDrop)
 	
 
 

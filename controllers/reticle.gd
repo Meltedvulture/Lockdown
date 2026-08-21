@@ -12,11 +12,11 @@ func _ready():
 	queue_redraw()
 
 func _process(_delta):
-	if not is_multiplayer_authority(): return
 	adjustReticleLines()
 
 
 func _draw():
+	if not is_multiplayer_authority(): return
 	draw_circle(Vector2(20,20),dotRadius,dotColor)
 
 

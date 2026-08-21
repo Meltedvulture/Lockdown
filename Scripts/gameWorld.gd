@@ -116,18 +116,31 @@ func resetRound():
 	Global.respawnPlayers()
 	rpc("recieveReset")
 
-@rpc("reliable")
+@rpc("reliable", "any_peer")
 func recieveReset():
 	Global.roundReset.emit()
 	Global.respawnPlayers()
 
-@rpc("reliable")
+@rpc("reliable", "call_local", "any_peer")
 func updateAlivePlayers(team):
 	if multiplayer.get_unique_id() == 1:
 		if team == "Cop":
 			Global.aliveCopCount -= 1
 		elif team == "Robber":
 			Global.aliveRobberCount -= 1
+
+		
+		print(Global.aliveCopCount)
+		print(Global.aliveRobberCount)
 		
 		if Global.aliveCopCount <= 0 or Global.aliveRobberCount <= 0:
+			Global.aliveCopCount = 0
+			Global.aliveRobberCount = 0
+			for t in teams.values():
+
+				if t == "Cop":
+					Global.aliveCopCount += 1
+
+				elif t == "Robber":
+					Global.aliveRobberCount += 1
 			resetRound()

@@ -15,7 +15,8 @@ var itemPaths = [
 func _ready() -> void:
 	rng.randomize()
 	Global.roundReset.connect(spawnItem)
-	call_deferred("spawnItem")
+	if multiplayer.is_server():
+		call_deferred("spawnItem")
 
 func spawnItem():
 	var dropInstance = weaponDrop.instantiate()
