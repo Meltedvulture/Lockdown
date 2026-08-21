@@ -465,8 +465,8 @@ func dropWeapon():
 @rpc("any_peer")
 func replicateDroppedWeapon(weapon, clip, reserve, dropPos, dropVel, team):
 	var dropInstance = weaponDrop.instantiate()
-	dropInstance.global_position = dropPos
 	get_tree().root.get_node("World").add_child(dropInstance)
+	dropInstance.global_position = dropPos
 	dropInstance.setWeapon(weapon)
 	dropInstance.setTeam(team)
 	dropInstance.setModel(weapon)

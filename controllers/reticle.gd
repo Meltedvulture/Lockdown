@@ -17,14 +17,13 @@ func _process(_delta):
 
 
 func _draw():
-	if not is_multiplayer_authority(): return
 	draw_circle(Vector2(20,20),dotRadius,dotColor)
 
 
 func adjustReticleLines():
 	if not is_multiplayer_authority(): return
-	if playerController == null: return
-	var vel = playerController.get_real_velocity()
+	if Global.player == null: return
+	var vel = Global.player.get_real_velocity()
 	var origin = Vector3(0,0,0)
 	var pos = Vector2(20,20)
 	var speed = origin.distance_to(vel)

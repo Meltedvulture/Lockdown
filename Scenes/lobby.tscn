@@ -223,7 +223,6 @@ grow_vertical = 2
 mouse_filter = 1
 
 [node name="Reticle" type="CenterContainer" parent="UserInterface" unique_id=949750882 node_paths=PackedStringArray("reticleLines")]
-visible = false
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
