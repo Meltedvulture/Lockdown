@@ -1,7 +1,9 @@
 @tool
 
 extends Node
+@warning_ignore("unused_signal")
 signal roundReset
+@warning_ignore("unused_signal")
 signal playerJoined
 
 var player

@@ -10,7 +10,7 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if get_tree().current_scene.trapSetupMode == false:
-		collision.disabled = false
-	else:
-		collision.disabled = true
+	collision.disabled = get_tree().current_scene.trapSetupMode
+	
+	if inverted_open:
+		collision.disabled = !get_tree().current_scene.trapSetupMode

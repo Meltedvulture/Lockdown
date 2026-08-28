@@ -15,15 +15,25 @@ var itemPaths = [
 func _ready() -> void:
 	rng.randomize()
 	Global.roundReset.connect(spawnItem)
-	if multiplayer.is_server():
-		call_deferred("spawnItem")
 
 func spawnItem():
+	if multiplayer.get_unique_id() == 1:
+		var dropInstance = weaponDrop.instantiate()
+		get_tree().root.get_node("World").add_child(dropInstance)
+		var loadedItem = itemPaths[rng.randi_range(0, itemPaths.size()-1)]
+		dropInstance.global_position = dropLocation.global_position
+		dropInstance.setWeapon(loadedItem)
+		dropInstance.setModel(loadedItem)
+		dropInstance.setAttribute("isItem", true)
+		get_tree().current_scene.totalItems += 1
+		rpc("replicateDroppedItem", loadedItem, dropLocation.global_position)
+	
+@rpc("any_peer")
+func replicateDroppedItem(weapon, dropPos):
 	var dropInstance = weaponDrop.instantiate()
 	get_tree().root.get_node("World").add_child(dropInstance)
-	var loadedItem = itemPaths[rng.randi_range(0, itemPaths.size()-1)]
-	dropInstance.global_position = dropLocation.global_position
-	dropInstance.setWeapon(loadedItem)
-	dropInstance.setModel(loadedItem)
+	dropInstance.global_position = dropPos
+	dropInstance.setWeapon(weapon)
+	dropInstance.setModel(weapon)
 	dropInstance.setAttribute("isItem", true)
 	get_tree().current_scene.totalItems += 1

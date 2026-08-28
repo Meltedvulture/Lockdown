@@ -158,6 +158,7 @@ func add_player(peer_id: int):
 
 	print("Player ", peer_id, " joined.")
 	print("Playercount is ", playercount, "/", MAX_PLAYERS)
+	print(multiplayer.get_unique_id())
 	Global.playerJoined.emit()
 
 
@@ -431,20 +432,37 @@ func _on_exit_game_pressed() -> void:
 
 	get_tree().quit()
 
+func showAnnounceText(text : String):
+	var announceBox = $"UserInterface/Spawn Text"
+	var announceLabel = %AnnounceLabel
+	announceLabel.text = text
+	announceBox.show()
+	await get_tree().create_timer(3.0).timeout
+	announceBox.hide()
+
+@rpc("reliable", "any_peer")
 func exitTrapSetup():
 	if trapSetupMode == true:
 		trapSetupMode = false
+		Global.roundReset.emit()
 		Global.respawnPlayers()
+		showAnnounceText("Rob stuff I guess")
 
 func resetRound():
 	Global.roundReset.emit()
 	Global.respawnPlayers()
+	trapSetupMode = true
 	rpc("recieveReset")
-
+	if Global.myCurrentTeam == "Cop":
+		showAnnounceText("Trap setup mode")
+		
 @rpc("reliable", "any_peer")
 func recieveReset():
 	Global.roundReset.emit()
 	Global.respawnPlayers()
+	trapSetupMode = true
+	if Global.myCurrentTeam == "Cop":
+		showAnnounceText("Trap setup mode")
 
 @rpc("reliable", "call_local", "any_peer")
 func updateAlivePlayers(team):

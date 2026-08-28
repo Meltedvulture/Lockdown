@@ -106,20 +106,37 @@ func swap_to_new_instance():
 		add_child(new_instance)
 		active_instance = new_instance
 
+func showAnnounceText(text : String):
+	var announceBox = $"UserInterface/Spawn Text"
+	var announceLabel = %AnnounceLabel
+	announceLabel.text = text
+	announceBox.show()
+	await get_tree().create_timer(3.0).timeout
+	announceBox.hide()
+
+@rpc("reliable", "any_peer")
 func exitTrapSetup():
 	if trapSetupMode == true:
 		trapSetupMode = false
+		Global.roundReset.emit()
 		Global.respawnPlayers()
+		showAnnounceText("Rob stuff I guess")
 
 func resetRound():
 	Global.roundReset.emit()
 	Global.respawnPlayers()
+	trapSetupMode = true
 	rpc("recieveReset")
-
+	if Global.myCurrentTeam == "Cop":
+		showAnnounceText("Trap setup mode")
+		
 @rpc("reliable", "any_peer")
 func recieveReset():
 	Global.roundReset.emit()
 	Global.respawnPlayers()
+	trapSetupMode = true
+	if Global.myCurrentTeam == "Cop":
+		showAnnounceText("Trap setup mode")
 
 @rpc("reliable", "call_local", "any_peer")
 func updateAlivePlayers(team):
@@ -128,10 +145,6 @@ func updateAlivePlayers(team):
 			Global.aliveCopCount -= 1
 		elif team == "Robber":
 			Global.aliveRobberCount -= 1
-
-		
-		print(Global.aliveCopCount)
-		print(Global.aliveRobberCount)
 		
 		if Global.aliveCopCount <= 0 or Global.aliveRobberCount <= 0:
 			Global.aliveCopCount = 0

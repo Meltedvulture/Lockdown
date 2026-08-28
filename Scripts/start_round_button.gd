@@ -12,3 +12,4 @@ func update():
 func interact():
 	if get_tree().current_scene.trapSetupMode == true:
 		get_tree().current_scene.exitTrapSetup()
+		get_tree().current_scene.exitTrapSetup.rpc()

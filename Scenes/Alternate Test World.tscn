@@ -77,9 +77,10 @@ script = ExtResource("1_t8h2s")
 
 [node name="TeamDoor" parent="." unique_id=214082965 instance=ExtResource("10_62ac6")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0, 0)
+inverted_open = true
 
 [node name="StartRoundButton" parent="." unique_id=308019239 instance=ExtResource("13_dfwm5")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0, -5)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -18, 0, -5)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1539882701]
 transform = Transform3D(-0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, 0.75, -0.433013, 0, 0, 0)
@@ -377,7 +378,7 @@ offset_bottom = -195.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Spawn Label" type="Label" parent="UserInterface/Spawn Text" unique_id=38426444]
+[node name="AnnounceLabel" type="Label" parent="UserInterface/Spawn Text" unique_id=38426444]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 6

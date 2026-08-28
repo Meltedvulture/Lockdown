@@ -26,7 +26,7 @@ extends Resource
 @export_enum("Magazine", "Shell") var reloadMode: String = "Magazine"
 @export_enum("Semi", "Auto", "Bolt") var fireMode: String = "Semi"
 @export_enum("Projectile", "Hitscan") var bulletPhysics: String = "Hitscan"
-@export_file("*.tscn") var bulletScene 
+@export_file("*.tscn") var bulletScene = ""
 
 @export_category("Weapon Orientation")
 @export var position : Vector3
