@@ -170,7 +170,6 @@ func _process(delta: float) -> void:
 		stamina += ceil(16.5 * delta)
 
 	if Input.is_action_just_pressed("debugAction"):
-		print("SET TRAPPEPD")
 		currentHeldTrap = "res://trapSystem/sawbladeTrap.tscn"
 
 func updateGravity(delta) -> void:
@@ -237,21 +236,28 @@ func updatePlayerModel():
 	elif Global.myCurrentTeam == "Robber":
 		robberModel.visible = true
 
-func placeTrap():
-	pass
+@rpc("any_peer")
+func createTrapOnServer(trap, trapName):
+	var loadedServerTrap = load(trap)
+	var serverTrap = loadedServerTrap.instantiate()
+	serverTrap.name = trapName
+	get_tree().root.get_node("World").add_child(serverTrap)
 
 func holdingTrap():
 	if Global.myCurrentTeam == "Cop":
 		if loadedTrap != null:
 			if hasInstancedTrap == false:
-				trapInstance = loadedTrap.instantiate()
+				
 				var trapName = "Trap %d" % weaponGlobal.rng.randi_range(1, 10000)
 				while find_child(trapName) != null:
 					trapName = "Trap %d" % weaponGlobal.rng.randi_range(1, 10000)
-				trapInstance.name = trapName
-				get_tree().root.get_node("World").add_child(trapInstance)
+				if multiplayer.get_unique_id() == 1:
+					trapInstance = loadedTrap.instantiate()
+					trapInstance.name = trapName
+					get_tree().root.get_node("World").add_child(trapInstance)
+				else:
+					rpc_id(1,"createTrapOnServer", currentHeldTrap, trapName)
 				hasInstancedTrap = true
-				#rpc("replicateTrapPlacement", currentHeldTrap, trapName)
 			if trapInstance != null:
 				if interactionCast.is_colliding():
 					trapInstance.global_position = interactionCast.get_collision_point()
