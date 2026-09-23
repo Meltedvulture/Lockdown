@@ -213,8 +213,9 @@ func updateVelocity() -> void:
 
 @rpc("any_peer")
 func take_damage(damage, type, team):
+	if not is_multiplayer_authority():
+		return
 	if team != Global.myCurrentTeam:
-
 		Global.playerHealth -= damage
 		damageVignette.material.set_shader_parameter("intensity", damageVignette.material.get_shader_parameter("intensity") + 0.25)
 		damageVignette.material.set_shader_parameter("intensity", clampf(damageVignette.material.get_shader_parameter("intensity"), 0.0, 0.75))  
@@ -236,47 +237,34 @@ func updatePlayerModel():
 	elif Global.myCurrentTeam == "Robber":
 		robberModel.visible = true
 
-@rpc("any_peer")
-func createTrapOnServer(trap, trapName):
-	var loadedServerTrap = load(trap)
-	var serverTrap = loadedServerTrap.instantiate()
-	serverTrap.name = trapName
-	get_tree().root.get_node("World").add_child(serverTrap)
+
 
 func holdingTrap():
 	if Global.myCurrentTeam == "Cop":
 		if loadedTrap != null:
 			if hasInstancedTrap == false:
-				
+				trapInstance = loadedTrap.instantiate()
 				var trapName = "Trap %d" % weaponGlobal.rng.randi_range(1, 10000)
 				while find_child(trapName) != null:
 					trapName = "Trap %d" % weaponGlobal.rng.randi_range(1, 10000)
-				if multiplayer.get_unique_id() == 1:
-					trapInstance = loadedTrap.instantiate()
-					trapInstance.name = trapName
-					get_tree().root.get_node("World").add_child(trapInstance)
-				else:
-					rpc_id(1,"createTrapOnServer", currentHeldTrap, trapName)
+				trapInstance.name = trapName
+				get_tree().root.get_node("World").add_child(trapInstance)
 				hasInstancedTrap = true
+				#rpc("replicateTrapPlacement", currentHeldTrap, trapName)
 			if trapInstance != null:
 				if interactionCast.is_colliding():
 					trapInstance.global_position = interactionCast.get_collision_point()
 				else:
 					trapInstance.global_position = interactionCast.global_position + interactionCast.global_transform.basis * interactionCast.target_position
 				if Input.is_action_just_pressed("interact"):
+					rpc("replicateTrapPlacement", currentHeldTrap, trapInstance.name, trapInstance.global_position)
 					trapInstance = null
 					loadedTrap = null
 					hasInstancedTrap = false
-#@rpc("any_peer")
-#func replicateTrapPlacement(trapPath, trapName):
-	#var clientTrapLoad = load(trapPath)
-	#var trapInstanceClient = clientTrapLoad.instantiate()
-	#trapInstanceClient.name = trapName
-	#get_tree().root.get_node("World").add_child(trapInstanceClient)
-#THIS NEEDS UPDATING TO NEW UI PLEASE
-#WILL BE ANNOUNCEMENT TEXT NOT LEVEL CHANGE
-#func showLevelText(spawnText):
-	#%"Spawn Label".text = spawnText
-	#animationPlayer.play("Level Fade", -1, 1, false)
-	#await animationPlayer.animation_finished
-	#animationPlayer.play("Level Fade", -1, -1, true)
+@rpc("any_peer")
+func replicateTrapPlacement(trapPath, trapName, trapPos):
+	var clientTrapLoad = load(trapPath)
+	var trapInstanceClient = clientTrapLoad.instantiate()
+	trapInstanceClient.name = trapName
+	trapInstanceClient.global_position = trapPos
+	get_tree().root.get_node("World").add_child(trapInstanceClient)

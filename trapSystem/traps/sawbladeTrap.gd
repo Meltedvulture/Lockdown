@@ -3,7 +3,7 @@ extends Node3D
 @onready var animationPlayer = $AnimationPlayer
 @onready var timer = $Timer
 @onready var blade = $Blade
-@onready var hurtBox = $Blade/HurtArea
+@onready var hurtArea = $Blade/HurtArea
 var sawDanger = false
 
 # Called when the node enters the scene tree for the first time.
@@ -28,13 +28,8 @@ func changeSawState():
 		animationPlayer.play("sawbladeDown")
 
 
-func _on_hurt_area_body_entered(body: Node3D) -> void:
-	if body.has_method("take_damage"):
-		body.take_damage(1, "bullet", "both")  # Deal damage to the enemy
-
-
 func _on_damage_timer_timeout() -> void:
-	var bodies = hurtBox.get_overlapping_bodies()
+	var bodies = hurtArea.get_overlapping_bodies()
 	for i in bodies:
 		if i.has_method("take_damage"):
 			i.take_damage(5, "bullet", "Cop")  # Deal damage to the enemy

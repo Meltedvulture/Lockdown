@@ -275,7 +275,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -27.373262, 2, 0)
 transform = Transform3D(0.2774824, 0, 0.96073073, 0, 1, 0, -0.96073073, 0, 0.2774824, 0, 0, 0)
 
 [node name="SpawnPoints" type="MultiplayerSpawner" parent="." unique_id=559373657]
-_spawnable_scenes = PackedStringArray("uid://c3ffql15mo0aj", "uid://ha8gav5g5u7l")
+_spawnable_scenes = PackedStringArray("uid://c3ffql15mo0aj")
 spawn_path = NodePath("..")
 
 [node name="Enemy" parent="." unique_id=204833997 instance=ExtResource("3_nule3")]
